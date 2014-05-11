@@ -1,4 +1,4 @@
-# Documentation for PyQuadTree
+# PyQuadTree
 
 A pure Python QuadTree spatial index for GIS or rendering usage.
 
@@ -9,13 +9,19 @@ License: MIT
 Based on Matt Rasmussen's original code:
 https://github.com/mdrasmus/compbio/blob/master/rasmus/quadtree.py
 
+## Installing It
+
+Installing PyQuadTree is as easy as putting the "pyqtree" folder anywhere Python can import it,
+such as the folder "PythonXX/Lib/site-packages"
+
 ## Example Usage
 
-First setup and populate the spatial index
+Setup and populate the spatial index
 
 ```
 #assuming you have a list of items with a bounding box attribute
-spindex = Index(x=50,y=50,size=45)
+import pyqtree
+spindex = pyqtree.Index(x=50,y=50,size=45)
 for item in items:
     spindex.insert(item=item, bbox=item.bbox)
 ```
