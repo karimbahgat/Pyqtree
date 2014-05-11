@@ -1,7 +1,11 @@
 """
+PyQuadTree
 
-Pure Python QuadTree spatial index for GIS use
+A pure Python QuadTree spatial index for GIS or rendering usage.
+
 Karim Bahgat, 2014
+
+License: MIT
 
 Based on Matt Rasmussen's original code:
 https://github.com/mdrasmus/compbio/blob/master/rasmus/quadtree.py
@@ -46,12 +50,12 @@ class Index:
     populated with geographically placed members that can later be tested for
     intersection with a user inputted geographic bounding box.
 
-    - __x__  
-      the x center coordinate of the area that the quadtree should keep track of
-    - __y__  
-      the y center coordinate of the area that the quadtree should keep track of
-    - __size__  
-      how far from the center (both x and y) that the quadtree should look when keeping track
+    | **option** | **description**
+    | --- | --- 
+    | x | the x center coordinate of the area that the quadtree should keep track of
+    | y | the y center coordinate of the area that the quadtree should keep track of
+    | size | how far from the center (both x and y) that the quadtree should look when keeping track
+
     """
     MAX = 10
     MAX_DEPTH = 20
@@ -74,10 +78,10 @@ class Index:
         """
         Inserts an item into the quadtree along with its bounding box.
 
-        - __item__  
-          the item to insert into the index, which will be returned by the intersection method
-        - __bbox__  
-          the spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)
+        | **option** | **description**
+        | --- | --- 
+        | item | the item to insert into the index, which will be returned by the intersection method
+        | bbox | the spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)
         """
         rect = _normalize_rect(bbox)
         if len(self.children) == 0:
@@ -95,10 +99,10 @@ class Index:
         contained in the quadtree. Returns a list of items whose bounding
         boxes intersect with the input rectangle.
 
-        - __bbox__  
-          a spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)
-        - __results__  
-          only used internally
+        | **option** | **description**
+        | --- | --- 
+        | bbox | a spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)
+        | results | only used internally
         """
         rect = bbox
         if results is None:
