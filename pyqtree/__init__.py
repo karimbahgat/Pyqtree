@@ -5,6 +5,8 @@ A pure Python QuadTree spatial index for GIS or rendering usage.
 
 Karim Bahgat, 2014
 
+Version: 0.2
+
 License: MIT
 
 Based on Matt Rasmussen's original code:
@@ -17,22 +19,38 @@ such as the folder "PythonXX/Lib/site-packages"
 
 ## Example Usage
 
-Setup and populate the spatial index
+Start your session by importing the module.
 
-```
-#assuming you have a list of items with a bounding box attribute
+```python
 import pyqtree
-spindex = pyqtree.Index(x=50,y=50,size=45)
+```
+
+Setup the spatial index, giving it a bounding box area to keep track of.
+The bounding box being in a four-tuple: (xmin,ymin,xmax,ymax).
+
+```python
+spindex = pyqtree.Index(bbox=[0,0,100,100])
+```
+
+Populate the index with items that you want to be retrieved at a later point,
+along with each item's geographic bbox.
+
+```python
+#this example assumes you have a list of items with bbox attribute
 for item in items:
     spindex.insert(item=item, bbox=item.bbox)
 ```
 
-Then retrieve index items that overlap a queried bounding box area
+Then when you have a region of interest and you wish to retrieve items from that region,
+just use the index's intersect method. This quickly gives you a list of the stored items
+whose bboxes intersects your region of interests. 
 
-```
+```python
 overlapbbox = (51,51,86,86)
 matches = spindex.intersect(overlapbbox)
 ```
+
+There are other things that can be done as well, but that's it for the main usage!
 
 """
 
@@ -47,29 +65,28 @@ def _normalize_rect(rect):
 class _QuadNode:    
     def __init__(self, item, rect):
         self.item = item
-        self.rect = rect
-
-#USER CLASSES AND FUNCTIONS
-class Index:
+        self.rect = rect 
+class _Index:
     """
-    The top spatial index to be created by the user. Once created it can be
-    populated with geographically placed members that can later be tested for
-    intersection with a user inputted geographic bounding box.
+    The index being used behind the scenes. Has all the same methods as the user
+    index, but requires more technical arguments when initiating it than the
+    user-friendly version. 
 
     | **option** | **description**
     | --- | --- 
     | x | the x center coordinate of the area that the quadtree should keep track of
     | y | the y center coordinate of the area that the quadtree should keep track of
-    | size | how far from the center (both x and y) that the quadtree should look when keeping track
+    | width | how far from the xcenter that the quadtree should look when keeping track
+    | height | how far from the ycenter that the quadtree should look when keeping track
 
     """
     MAX = 10
     MAX_DEPTH = 20
-    def __init__(self, x, y, size, depth = 0):
+    def __init__(self, x, y, width, height, depth = 0):
         self.nodes = []
         self.children = []
         self.center = [x, y]
-        self.size = size
+        self.width,self.height = width,height
         self.depth = depth
     def __iter__(self):
         def loopallchildren(parent):
@@ -164,23 +181,54 @@ class Index:
                 if rect[3] > self.center[1]:
                     return self.children[3].insert(item, rect)
     def _split(self):
-        self.children = [Index(self.center[0] - self.size/2,
-                                  self.center[1] - self.size/2,
-                                  self.size/2, self.depth + 1),
-                         Index(self.center[0] - self.size/2,
-                                  self.center[1] + self.size/2,
-                                  self.size/2, self.depth + 1),
-                         Index(self.center[0] + self.size/2,
-                                  self.center[1] - self.size/2,
-                                  self.size/2, self.depth + 1),
-                         Index(self.center[0] + self.size/2,
-                                  self.center[1] + self.size/2,
-                                  self.size/2, self.depth + 1)]
+        quartwidth = self.width/4.0
+        quartheight = self.height/4.0
+        halfwidth = self.width/2.0
+        halfheight = self.height/2.0
+        self.children = [_Index(self.center[0] - quartwidth,
+                                  self.center[1] - quartheight,
+                                  width=halfwidth, height=halfheight,
+                                  depth=self.depth + 1),
+                         _Index(self.center[0] - quartwidth,
+                                  self.center[1] + quartheight,
+                                  width=halfwidth, height=halfheight,
+                                  depth=self.depth + 1),
+                         _Index(self.center[0] + quartwidth,
+                                  self.center[1] - quartheight,
+                                  width=halfwidth, height=halfheight,
+                                  depth=self.depth + 1),
+                         _Index(self.center[0] + quartwidth,
+                                  self.center[1] + quartheight,
+                                  width=halfwidth, height=halfheight,
+                                  depth=self.depth + 1)]
         nodes = self.nodes
         self.nodes = []
         for node in nodes:
             self._insert_into_children(node.item, node.rect)
 
+#USER CLASSES AND FUNCTIONS 
+class Index(_Index):
+    """
+    The top spatial index to be created by the user. Once created it can be
+    populated with geographically placed members that can later be tested for
+    intersection with a user inputted geographic bounding box. Note that the
+    index can be iterated through in a for-statement, which loops through all
+    all the quad instances and lets you access their properties.
+
+    | **option** | **description**
+    | --- | --- 
+    | bbox | the coordinate system bounding box of the area that the quadtree should keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)
+    
+    """
+    def __init__(self, bbox):
+        x1,y1,x2,y2 = bbox
+        width,height = x2-x1,y2-y1
+        midx,midy = x1+width/2.0, y1+height/2.0
+        self.nodes = []
+        self.children = []
+        self.center = [midx, midy]
+        self.width,self.height = width,height
+        self.depth = 0
 
 #SOME TESTING
 if __name__ == "__main__":
@@ -196,7 +244,7 @@ if __name__ == "__main__":
 
     #setup and populate index
     items = [Item(random.randrange(5,95),random.randrange(5,95)) for _ in xrange(1000)]
-    spindex = Index(50,50,45)
+    spindex = Index(bbox=[-11,-33,100,100])
     for item in items:
         spindex.insert(item, item.bbox)
 
