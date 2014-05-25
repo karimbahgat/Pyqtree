@@ -1,4 +1,4 @@
-# PyQuadTree
+# Documentation for PyQuadTree
 
 A pure Python QuadTree spatial index for GIS or rendering usage.
 
@@ -7,6 +7,8 @@ Karim Bahgat, 2014
 Version: 0.2
 
 License: MIT
+
+Platforms: Python 2x and 3x
 
 Based on Matt Rasmussen's original code:
 https://github.com/mdrasmus/compbio/blob/master/rasmus/quadtree.py

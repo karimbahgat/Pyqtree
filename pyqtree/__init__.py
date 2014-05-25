@@ -9,6 +9,8 @@ Version: 0.2
 
 License: MIT
 
+Platforms: Python 2x and 3x
+
 Based on Matt Rasmussen's original code:
 https://github.com/mdrasmus/compbio/blob/master/rasmus/quadtree.py
 
@@ -53,6 +55,12 @@ matches = spindex.intersect(overlapbbox)
 There are other things that can be done as well, but that's it for the main usage!
 
 """
+
+#PYTHON VERSION CHECK
+import sys
+PYTHON3 = int(sys.version[0]) == 3
+if PYTHON3:
+    xrange = range
 
 #INTERNAL USE ONLY
 def _normalize_rect(rect):
@@ -249,9 +257,9 @@ if __name__ == "__main__":
         spindex.insert(item, item.bbox)
 
     #test intersection
-    print "testing hit"
+    print("testing hit")
     testitem = (51,51,86,86)
     t = time.time()
     matches = spindex.intersect(testitem)
-    print time.time()-t, " seconds"
+    print(time.time()-t, " seconds")
 
