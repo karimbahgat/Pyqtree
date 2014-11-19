@@ -70,10 +70,12 @@ def _normalize_rect(rect):
     if y1 > y2:
         y1, y2 = y2, y1
     return (x1, y1, x2, y2)
+
 class _QuadNode:    
     def __init__(self, item, rect):
         self.item = item
-        self.rect = rect 
+        self.rect = rect
+        
 class _Index:
     """
     The index being used behind the scenes. Has all the same methods as the user
@@ -121,9 +123,8 @@ class _Index:
             
             if len(self.nodes) > self.MAX and self.depth < self.MAX_DEPTH:
                 self._split()
-                return node
         else:
-            return self._insert_into_children(item, rect)
+            self._insert_into_children(item, rect)
     def intersect(self, bbox, results=None):
         """
         Intersects an input boundingbox rectangle with all of the items
@@ -175,19 +176,18 @@ class _Index:
             (rect[1] <= self.center[1] and rect[3] > self.center[1])):
             node = _QuadNode(item, rect)
             self.nodes.append(node)
-            return node
         else:
             # try to insert into children
             if rect[0] <= self.center[0]:
                 if rect[1] <= self.center[1]:
-                    return self.children[0].insert(item, rect)
+                    self.children[0].insert(item, rect)
                 if rect[3] > self.center[1]:
-                    return self.children[1].insert(item, rect)
+                    self.children[1].insert(item, rect)
             if rect[2] > self.center[0]:
                 if rect[1] <= self.center[1]:
-                    return self.children[2].insert(item, rect)
+                    self.children[2].insert(item, rect)
                 if rect[3] > self.center[1]:
-                    return self.children[3].insert(item, rect)
+                    self.children[3].insert(item, rect)
     def _split(self):
         quartwidth = self.width/4.0
         quartheight = self.height/4.0
