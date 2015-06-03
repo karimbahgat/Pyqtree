@@ -74,7 +74,7 @@ Karim Bahgat (2015)
 
 """
 
-__version__ = "0.21"
+__version__ = "0.22"
 
 #PYTHON VERSION CHECK
 import sys
