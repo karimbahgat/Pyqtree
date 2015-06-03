@@ -1,7 +1,7 @@
 """
-# PyQuadTree
+# Pyqtree
 
-PyQuadTree is a pure Python spatial index for GIS or rendering usage.
+Pyqtree is a pure Python spatial index for GIS or rendering usage.
 It stores and quickly retrieves items from a 2x2 rectangular grid area,
 and grows in depth and detail as more items are added. 
 The actual quad tree implementation is adapted from
@@ -16,12 +16,12 @@ Python 2 and 3.
 
 ## Dependencies
 
-PyQuadTree is written in pure Python and has no dependencies.
+Pyqtree is written in pure Python and has no dependencies.
 
 
 ## Installing It
 
-Installing PyQuadTree can be done by opening your terminal or commandline and typing:
+Installing Pyqtree can be done by opening your terminal or commandline and typing:
 
     pip install pyqtree
 
@@ -59,8 +59,8 @@ There are other things that can be done as well, but that's it for the main usag
 
 ## More Information:
 
-- [Home Page](http://github.com/karimbahgat/PyQuadTree)
-- [API Documentation](http://pythonhosted.org/PyQuadTree)
+- [Home Page](http://github.com/karimbahgat/Pyqtree)
+- [API Documentation](http://pythonhosted.org/Pyqtree)
 
 
 ## License:
@@ -74,7 +74,7 @@ Karim Bahgat (2015)
 
 """
 
-__version__ = "0.22"
+__version__ = "0.23"
 
 #PYTHON VERSION CHECK
 import sys

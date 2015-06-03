@@ -1034,13 +1034,6 @@ table {
   <div id="sidebar">
     <h1>Index</h1>
     <ul id="index">
-    <li class="set"><h3><a href="#header-variables">Module variables</a></h3>
-      
-  <ul>
-    <li class="mono"><a href="#pyqtree.PYTHON3">PYTHON3</a></li>
-  </ul>
-
-    </li>
 
 
     <li class="set"><h3><a href="#header-classes">Classes</a></h3>
@@ -1074,321 +1067,10 @@ table {
   <h1 class="title"><span class="name">pyqtree</span> module</h1>
   <h1><strong>API Documentation</strong></h1>
   
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pyqtree', this);">Show source &equiv;</a></p>
-  <div id="source-pyqtree" class="source">
-    <div class="codehilite"><pre><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd"># PyQuadTree</span>
-
-<span class="sd">PyQuadTree is a pure Python spatial index for GIS or rendering usage.</span>
-<span class="sd">It stores and quickly retrieves items from a 2x2 rectangular grid area,</span>
-<span class="sd">and grows in depth and detail as more items are added. </span>
-<span class="sd">The actual quad tree implementation is adapted from</span>
-<span class="sd">[Matt Rasmussen&#39;s compbio library](https://github.com/mdrasmus/compbio/blob/master/rasmus/quadtree.py)</span>
-<span class="sd">and extended for geospatial use.</span>
-
-
-<span class="sd">## Platforms</span>
-
-<span class="sd">Python 2 and 3. </span>
-
-
-<span class="sd">## Dependencies</span>
-
-<span class="sd">PyQuadTree is written in pure Python and has no dependencies.</span>
-
-
-<span class="sd">## Installing It</span>
-
-<span class="sd">Installing PyQuadTree can be done by opening your terminal or commandline and typing:</span>
-
-<span class="sd">    pip install pyqtree</span>
-
-<span class="sd">Alternatively, you can simply download the &quot;pyqtree.py&quot; file and place</span>
-<span class="sd">it anywhere Python can import it, such as the Python site-packages folder.</span>
-
-
-<span class="sd">## Example Usage</span>
-
-<span class="sd">Start your script by importing the module.</span>
-
-<span class="sd">    import pyqtree</span>
-
-<span class="sd">Setup the spatial index, giving it a bounding box area to keep track of.</span>
-<span class="sd">The bounding box being in a four-tuple: (xmin,ymin,xmax,ymax).</span>
-
-<span class="sd">    spindex = pyqtree.Index(bbox=[0,0,100,100])</span>
-
-<span class="sd">Populate the index with items that you want to be retrieved at a later point,</span>
-<span class="sd">along with each item&#39;s geographic bbox.</span>
-
-<span class="sd">    # this example assumes you have a list of items with bbox attribute</span>
-<span class="sd">    for item in items:</span>
-<span class="sd">        spindex.insert(item=item, bbox=item.bbox)</span>
-
-<span class="sd">Then when you have a region of interest and you wish to retrieve items from that region,</span>
-<span class="sd">just use the index&#39;s intersect method. This quickly gives you a list of the stored items</span>
-<span class="sd">whose bboxes intersects your region of interests. </span>
-
-<span class="sd">    overlapbbox = (51,51,86,86)</span>
-<span class="sd">    matches = spindex.intersect(overlapbbox)</span>
-
-<span class="sd">There are other things that can be done as well, but that&#39;s it for the main usage!</span>
-
-
-<span class="sd">## More Information:</span>
-
-<span class="sd">- [Home Page](http://github.com/karimbahgat/PyQuadTree)</span>
-<span class="sd">- [API Documentation](http://pythonhosted.org/PyQuadTree)</span>
-
-
-<span class="sd">## License:</span>
-
-<span class="sd">This code is free to share, use, reuse, and modify according to the MIT license, see LICENSE.txt.</span>
-
-
-<span class="sd">## Credits:</span>
-
-<span class="sd">Karim Bahgat (2015)</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="n">__version__</span> <span class="o">=</span> <span class="s">&quot;0.22&quot;</span>
-
-<span class="c">#PYTHON VERSION CHECK</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">PYTHON3</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">version</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span>
-<span class="k">if</span> <span class="n">PYTHON3</span><span class="p">:</span>
-    <span class="nb">xrange</span> <span class="o">=</span> <span class="nb">range</span>
-
-<span class="c">#INTERNAL USE ONLY</span>
-<span class="k">def</span> <span class="nf">_normalize_rect</span><span class="p">(</span><span class="n">rect</span><span class="p">):</span>
-    <span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">rect</span>
-    <span class="k">if</span> <span class="n">x1</span> <span class="o">&gt;</span> <span class="n">x2</span><span class="p">:</span>
-        <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span> <span class="o">=</span> <span class="n">x2</span><span class="p">,</span> <span class="n">x1</span>
-    <span class="k">if</span> <span class="n">y1</span> <span class="o">&gt;</span> <span class="n">y2</span><span class="p">:</span>
-        <span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">y2</span><span class="p">,</span> <span class="n">y1</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">y1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
-
-<span class="k">class</span> <span class="nc">_QuadNode</span><span class="p">:</span>    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">item</span> <span class="o">=</span> <span class="n">item</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rect</span> <span class="o">=</span> <span class="n">rect</span>
-        
-<span class="k">class</span> <span class="nc">_QuadTree</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Internal backend version of the index.</span>
-
-<span class="sd">    The index being used behind the scenes. Has all the same methods as the user</span>
-<span class="sd">    index, but requires more technical arguments when initiating it than the</span>
-<span class="sd">    user-friendly version. </span>
-
-<span class="sd">    Args:</span>
-
-<span class="sd">    - **x**:</span>
-<span class="sd">        The x center coordinate of the area that the quadtree should keep track of. </span>
-<span class="sd">    - **y**</span>
-<span class="sd">        The y center coordinate of the area that the quadtree should keep track of.</span>
-<span class="sd">    - **width**:</span>
-<span class="sd">        How far from the xcenter that the quadtree should look when keeping track. </span>
-<span class="sd">    - **height**:</span>
-<span class="sd">        How far from the ycenter that the quadtree should look when keeping track</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">maxitems</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">maxdepth</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span><span class="n">height</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="n">depth</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span> <span class="o">=</span> <span class="n">maxitems</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span> <span class="o">=</span> <span class="n">maxdepth</span>
-        
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">def</span> <span class="nf">loopallchildren</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
-            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">child</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-                    <span class="k">for</span> <span class="n">subchild</span> <span class="ow">in</span> <span class="n">loopallchildren</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="n">child</span><span class="p">):</span>
-                        <span class="k">yield</span> <span class="n">subchild</span>
-                <span class="k">yield</span> <span class="n">child</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">loopallchildren</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">child</span>
-            
-    <span class="k">def</span> <span class="nf">_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="n">rect</span> <span class="o">=</span> <span class="n">_normalize_rect</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">node</span> <span class="o">=</span> <span class="n">_QuadNode</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-            
-            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_split</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_into_children</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-            
-    <span class="k">def</span> <span class="nf">_intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">results</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="n">rect</span> <span class="o">=</span> <span class="n">bbox</span>
-        <span class="k">if</span> <span class="n">results</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">rect</span> <span class="o">=</span> <span class="n">_normalize_rect</span><span class="p">(</span><span class="n">rect</span><span class="p">)</span>
-            <span class="n">results</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-        <span class="c"># search children</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">rect</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
-        <span class="c"># search node at this level</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="k">if</span> <span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> 
-                <span class="n">node</span><span class="o">.</span><span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">node</span><span class="o">.</span><span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]):</span>
-                <span class="n">results</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">item</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">results</span>
-    
-    <span class="c">#INTERNAL USE ONLY</span>
-    
-    <span class="k">def</span> <span class="nf">_insert_into_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">):</span>
-        <span class="c"># if rect spans center then insert here</span>
-        <span class="k">if</span> <span class="p">((</span><span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="ow">and</span>
-            <span class="p">(</span><span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">])):</span>
-            <span class="n">node</span> <span class="o">=</span> <span class="n">_QuadNode</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c"># try to insert into children</span>
-            <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">rect</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">rect</span><span class="p">)</span>
-                    
-    <span class="k">def</span> <span class="nf">_split</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">quartwidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mf">4.0</span>
-        <span class="n">quartheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mf">4.0</span>
-        <span class="n">halfwidth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span>
-        <span class="n">halfheight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">height</span><span class="o">/</span><span class="mf">2.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">_QuadTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">quartwidth</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">quartheight</span><span class="p">,</span>
-                                  <span class="n">width</span><span class="o">=</span><span class="n">halfwidth</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">halfheight</span><span class="p">,</span>
-                                  <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                  <span class="n">maxitems</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span><span class="p">,</span>
-                                  <span class="n">maxdepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span><span class="p">),</span>
-                         <span class="n">_QuadTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">quartwidth</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">quartheight</span><span class="p">,</span>
-                                  <span class="n">width</span><span class="o">=</span><span class="n">halfwidth</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">halfheight</span><span class="p">,</span>
-                                  <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                  <span class="n">maxitems</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span><span class="p">,</span>
-                                  <span class="n">maxdepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span><span class="p">),</span>
-                         <span class="n">_QuadTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">quartwidth</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">quartheight</span><span class="p">,</span>
-                                  <span class="n">width</span><span class="o">=</span><span class="n">halfwidth</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">halfheight</span><span class="p">,</span>
-                                  <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                  <span class="n">maxitems</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span><span class="p">,</span>
-                                  <span class="n">maxdepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span><span class="p">),</span>
-                         <span class="n">_QuadTree</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">quartwidth</span><span class="p">,</span>
-                                  <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">quartheight</span><span class="p">,</span>
-                                  <span class="n">width</span><span class="o">=</span><span class="n">halfwidth</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="n">halfheight</span><span class="p">,</span>
-                                  <span class="n">depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
-                                  <span class="n">maxitems</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span><span class="p">,</span>
-                                  <span class="n">maxdepth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span><span class="p">)]</span>
-        <span class="n">nodes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_insert_into_children</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">item</span><span class="p">,</span> <span class="n">node</span><span class="o">.</span><span class="n">rect</span><span class="p">)</span>
-
-<span class="c">#USER CLASSES AND FUNCTIONS</span>
-            
-<span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">_QuadTree</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The top spatial index to be created by the user. Once created it can be</span>
-<span class="sd">    populated with geographically placed members that can later be tested for</span>
-<span class="sd">    intersection with a user inputted geographic bounding box. Note that the</span>
-<span class="sd">    index can be iterated through in a for-statement, which loops through all</span>
-<span class="sd">    all the quad instances and lets you access their properties.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">maxitems</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">maxdepth</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters:</span>
-
-<span class="sd">        - **bbox**: The coordinate system bounding box of the area that the quadtree should</span>
-<span class="sd">            keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)</span>
-<span class="sd">        - **maxmembers** (optional): The maximum number of items allowed per quad before splitting</span>
-<span class="sd">            up into four new subquads. Default is 10. </span>
-<span class="sd">        - **maxdepth** (optional): The maximum levels of nested subquads, after which no more splitting</span>
-<span class="sd">            occurs and the bottommost quad nodes may grow indefinately. Default is 20. </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span> <span class="o">=</span> <span class="n">bbox</span>
-        <span class="n">width</span><span class="p">,</span><span class="n">height</span> <span class="o">=</span> <span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">,</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span>
-        <span class="n">midx</span><span class="p">,</span><span class="n">midy</span> <span class="o">=</span> <span class="n">x1</span><span class="o">+</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">height</span><span class="o">/</span><span class="mf">2.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">midx</span><span class="p">,</span> <span class="n">midy</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span><span class="n">height</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span> <span class="o">=</span> <span class="n">maxitems</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span> <span class="o">=</span> <span class="n">maxdepth</span>
-
-    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Inserts an item into the quadtree along with its bounding box.</span>
-
-<span class="sd">        Parameters:</span>
-
-<span class="sd">        - **item**: The item to insert into the index, which will be returned by the intersection method</span>
-<span class="sd">        - **bbox**: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Intersects an input boundingbox rectangle with all of the items</span>
-<span class="sd">        contained in the quadtree. </span>
-
-<span class="sd">        Parameters:</span>
-
-<span class="sd">        - **bbox**: A spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)</span>
-
-<span class="sd">        Returns:</span>
-
-<span class="sd">        - A list of inserted items whose bounding boxes intersect with the input rectangle.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">countmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns:</span>
-<span class="sd">        </span>
-<span class="sd">        - A count of the total number of members/items/nodes inserted into</span>
-<span class="sd">            this quadtree and all of its child trees.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="n">size</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">countmembers</span><span class="p">()</span>
-        <span class="n">size</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">size</span>
-</pre></div>
-
-  </div>
 
   </header>
 
   <section id="section-items">
-    <h2 class="section-title" id="header-variables">Module variables</h2>
-      <div class="item">
-      <p id="pyqtree.PYTHON3" class="name">var <span class="ident">PYTHON3</span></p>
-      
-  
-  <div class="source_cont">
-</div>
-
-      </div>
 
 
     <h2 class="section-title" id="header-classes">Classes</h2>
@@ -1403,79 +1085,6 @@ intersection with a user inputted geographic bounding box. Note that the
 index can be iterated through in a for-statement, which loops through all
 all the quad instances and lets you access their properties.</p></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pyqtree.Index', this);">Show source &equiv;</a></p>
-  <div id="source-pyqtree.Index" class="source">
-    <div class="codehilite"><pre><span class="k">class</span> <span class="nc">Index</span><span class="p">(</span><span class="n">_QuadTree</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    The top spatial index to be created by the user. Once created it can be</span>
-<span class="sd">    populated with geographically placed members that can later be tested for</span>
-<span class="sd">    intersection with a user inputted geographic bounding box. Note that the</span>
-<span class="sd">    index can be iterated through in a for-statement, which loops through all</span>
-<span class="sd">    all the quad instances and lets you access their properties.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">maxitems</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">maxdepth</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Parameters:</span>
-
-<span class="sd">        - **bbox**: The coordinate system bounding box of the area that the quadtree should</span>
-<span class="sd">            keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)</span>
-<span class="sd">        - **maxmembers** (optional): The maximum number of items allowed per quad before splitting</span>
-<span class="sd">            up into four new subquads. Default is 10. </span>
-<span class="sd">        - **maxdepth** (optional): The maximum levels of nested subquads, after which no more splitting</span>
-<span class="sd">            occurs and the bottommost quad nodes may grow indefinately. Default is 20. </span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span> <span class="o">=</span> <span class="n">bbox</span>
-        <span class="n">width</span><span class="p">,</span><span class="n">height</span> <span class="o">=</span> <span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">,</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span>
-        <span class="n">midx</span><span class="p">,</span><span class="n">midy</span> <span class="o">=</span> <span class="n">x1</span><span class="o">+</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">height</span><span class="o">/</span><span class="mf">2.0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">midx</span><span class="p">,</span> <span class="n">midy</span><span class="p">]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span><span class="n">height</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span> <span class="o">=</span> <span class="n">maxitems</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span> <span class="o">=</span> <span class="n">maxdepth</span>
-
-    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Inserts an item into the quadtree along with its bounding box.</span>
-
-<span class="sd">        Parameters:</span>
-
-<span class="sd">        - **item**: The item to insert into the index, which will be returned by the intersection method</span>
-<span class="sd">        - **bbox**: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Intersects an input boundingbox rectangle with all of the items</span>
-<span class="sd">        contained in the quadtree. </span>
-
-<span class="sd">        Parameters:</span>
-
-<span class="sd">        - **bbox**: A spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)</span>
-
-<span class="sd">        Returns:</span>
-
-<span class="sd">        - A list of inserted items whose bounding boxes intersect with the input rectangle.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-    
-    <span class="k">def</span> <span class="nf">countmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Returns:</span>
-<span class="sd">        </span>
-<span class="sd">        - A count of the total number of members/items/nodes inserted into</span>
-<span class="sd">            this quadtree and all of its child trees.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-            <span class="n">size</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">countmembers</span><span class="p">()</span>
-        <span class="n">size</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">size</span>
-</pre></div>
-
-  </div>
 </div>
 
 
@@ -1485,67 +1094,6 @@ all the quad instances and lets you access their properties.</p></div>
           <li><a href="#pyqtree.Index">Index</a></li>
           <li>pyqtree._QuadTree</li>
           </ul>
-          <h3>Instance variables</h3>
-            <div class="item">
-            <p id="pyqtree.Index.center" class="name">var <span class="ident">center</span></p>
-            
-
-            
-  
-  <div class="source_cont">
-</div>
-
-            </div>
-            <div class="item">
-            <p id="pyqtree.Index.children" class="name">var <span class="ident">children</span></p>
-            
-
-            
-  
-  <div class="source_cont">
-</div>
-
-            </div>
-            <div class="item">
-            <p id="pyqtree.Index.depth" class="name">var <span class="ident">depth</span></p>
-            
-
-            
-  
-  <div class="source_cont">
-</div>
-
-            </div>
-            <div class="item">
-            <p id="pyqtree.Index.maxdepth" class="name">var <span class="ident">maxdepth</span></p>
-            
-
-            
-  
-  <div class="source_cont">
-</div>
-
-            </div>
-            <div class="item">
-            <p id="pyqtree.Index.maxitems" class="name">var <span class="ident">maxitems</span></p>
-            
-
-            
-  
-  <div class="source_cont">
-</div>
-
-            </div>
-            <div class="item">
-            <p id="pyqtree.Index.nodes" class="name">var <span class="ident">nodes</span></p>
-            
-
-            
-  
-  <div class="source_cont">
-</div>
-
-            </div>
           <h3>Methods</h3>
             
   <div class="item">
@@ -1566,31 +1114,6 @@ all the quad instances and lets you access their properties.</p></div>
     occurs and the bottommost quad nodes may grow indefinately. Default is 20.</li>
 </ul></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pyqtree.Index.__init__', this);">Show source &equiv;</a></p>
-  <div id="source-pyqtree.Index.__init__" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">,</span> <span class="n">maxitems</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">maxdepth</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">    - **bbox**: The coordinate system bounding box of the area that the quadtree should</span>
-<span class="sd">        keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)</span>
-<span class="sd">    - **maxmembers** (optional): The maximum number of items allowed per quad before splitting</span>
-<span class="sd">        up into four new subquads. Default is 10. </span>
-<span class="sd">    - **maxdepth** (optional): The maximum levels of nested subquads, after which no more splitting</span>
-<span class="sd">        occurs and the bottommost quad nodes may grow indefinately. Default is 20. </span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x1</span><span class="p">,</span><span class="n">y1</span><span class="p">,</span><span class="n">x2</span><span class="p">,</span><span class="n">y2</span> <span class="o">=</span> <span class="n">bbox</span>
-    <span class="n">width</span><span class="p">,</span><span class="n">height</span> <span class="o">=</span> <span class="n">x2</span><span class="o">-</span><span class="n">x1</span><span class="p">,</span><span class="n">y2</span><span class="o">-</span><span class="n">y1</span>
-    <span class="n">midx</span><span class="p">,</span><span class="n">midy</span> <span class="o">=</span> <span class="n">x1</span><span class="o">+</span><span class="n">width</span><span class="o">/</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">y1</span><span class="o">+</span><span class="n">height</span><span class="o">/</span><span class="mf">2.0</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">[</span><span class="n">midx</span><span class="p">,</span> <span class="n">midy</span><span class="p">]</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">width</span><span class="p">,</span><span class="n">height</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">depth</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">maxitems</span> <span class="o">=</span> <span class="n">maxitems</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">maxdepth</span> <span class="o">=</span> <span class="n">maxdepth</span>
-</pre></div>
-
-  </div>
 </div>
 
   </div>
@@ -1610,23 +1133,6 @@ all the quad instances and lets you access their properties.</p></div>
     this quadtree and all of its child trees.</li>
 </ul></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pyqtree.Index.countmembers', this);">Show source &equiv;</a></p>
-  <div id="source-pyqtree.Index.countmembers" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">countmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns:</span>
-<span class="sd">    </span>
-<span class="sd">    - A count of the total number of members/items/nodes inserted into</span>
-<span class="sd">        this quadtree and all of its child trees.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">children</span><span class="p">:</span>
-        <span class="n">size</span> <span class="o">+=</span> <span class="n">child</span><span class="o">.</span><span class="n">countmembers</span><span class="p">()</span>
-    <span class="n">size</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">size</span>
-</pre></div>
-
-  </div>
 </div>
 
   </div>
@@ -1647,19 +1153,6 @@ all the quad instances and lets you access their properties.</p></div>
 <li><strong>bbox</strong>: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)</li>
 </ul></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pyqtree.Index.insert', this);">Show source &equiv;</a></p>
-  <div id="source-pyqtree.Index.insert" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Inserts an item into the quadtree along with its bounding box.</span>
-<span class="sd">    Parameters:</span>
-<span class="sd">    - **item**: The item to insert into the index, which will be returned by the intersection method</span>
-<span class="sd">    - **bbox**: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_insert</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">bbox</span><span class="p">)</span>
-</pre></div>
-
-  </div>
 </div>
 
   </div>
@@ -1684,21 +1177,6 @@ contained in the quadtree. </p>
 <li>A list of inserted items whose bounding boxes intersect with the input rectangle.</li>
 </ul></div>
   <div class="source_cont">
-  <p class="source_link"><a href="javascript:void(0);" onclick="toggle('source-pyqtree.Index.intersect', this);">Show source &equiv;</a></p>
-  <div id="source-pyqtree.Index.intersect" class="source">
-    <div class="codehilite"><pre><span class="k">def</span> <span class="nf">intersect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bbox</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Intersects an input boundingbox rectangle with all of the items</span>
-<span class="sd">    contained in the quadtree. </span>
-<span class="sd">    Parameters:</span>
-<span class="sd">    - **bbox**: A spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)</span>
-<span class="sd">    Returns:</span>
-<span class="sd">    - A list of inserted items whose bounding boxes intersect with the input rectangle.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">_intersect</span><span class="p">(</span><span class="n">bbox</span><span class="p">)</span>
-</pre></div>
-
-  </div>
 </div>
 
   </div>

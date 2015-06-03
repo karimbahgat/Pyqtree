@@ -6,8 +6,8 @@ pypi.define_upload(packpath,
                    author_email="karim.bahgat.norway@gmail.com",
                    license="MIT",
                    name="Pyqtree",
-                   description="A pure Python QuadTree spatial index for GIS or rendering usage.",
-                   url="http://github.com/karimbahgat/PyQuadTree",
+                   description="A pure Python quad tree spatial index for GIS or rendering usage.",
+                   url="http://github.com/karimbahgat/Pyqtree",
                    keywords="GIS spatial index quad tree",
                    classifiers=["License :: OSI Approved",
                                 "Programming Language :: Python",
@@ -18,8 +18,7 @@ pypi.define_upload(packpath,
                                 "Topic :: Scientific/Engineering :: GIS"],
                    )
 
-pypi.generate_docs(packpath) #!! WRONG TYPE, INCLUDES VARS AND SOURCE???
+pypi.generate_docs(packpath)
 #pypi.upload_test(packpath)
 pypi.upload(packpath)
 
-## UPDATE/REPLACE ON PYPI W NEW NAME......
