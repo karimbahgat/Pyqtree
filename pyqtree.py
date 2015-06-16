@@ -281,7 +281,7 @@ class Index(_QuadTree):
 
         - A list of inserted items whose bounding boxes intersect with the input rectangle.
         """
-        self._intersect(bbox)
+        return self._intersect(bbox)
     
     def countmembers(self):
         """
