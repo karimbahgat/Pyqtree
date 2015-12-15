@@ -15,6 +15,7 @@ items = [Item(random.randrange(5,95),random.randrange(5,95)) for _ in range(1000
 spindex = pyqtree.Index(bbox=[-11,-33,100,100])
 for item in items:
     spindex.insert(item, item.bbox)
+print("{0} members in this index.".format(spindex.countmembers()))
 
 #test intersection
 print("testing hit")
@@ -35,5 +36,5 @@ for item in items:
 # check result
 members = spindex.countmembers()
 assert(members == 4)
-print "{0} nodes in this Index.".format(members)
+print("{0} nodes in this Index.".format(members))
 
