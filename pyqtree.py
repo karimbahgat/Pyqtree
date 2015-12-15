@@ -77,7 +77,6 @@ Karim Bahgat (2015)
 __version__ = "0.24"
 
 #PYTHON VERSION CHECK
-import pdb
 import sys
 PYTHON3 = int(sys.version[0]) == 3
 if PYTHON3:
