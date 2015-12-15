@@ -77,6 +77,7 @@ Karim Bahgat (2015)
 __version__ = "0.24"
 
 #PYTHON VERSION CHECK
+import pdb
 import sys
 PYTHON3 = int(sys.version[0]) == 3
 if PYTHON3:
@@ -225,6 +226,20 @@ class _QuadTree:
         for node in nodes:
             self._insert_into_children(node.item, node.rect)
 
+    def _countmembers(self):
+        """
+        Returns:
+        
+        - A count of the total number of members/items/nodes inserted
+        into this quadtree and all of its child trees.
+        """
+        size = 0
+        for child in self.children:
+            size += child._countmembers()
+        size += len(self.nodes)
+        return size
+
+
 #USER CLASSES AND FUNCTIONS
             
 class Index(_QuadTree):
@@ -290,11 +305,7 @@ class Index(_QuadTree):
         - A count of the total number of members/items/nodes inserted into
             this quadtree and all of its child trees.
         """
-        size = 0
-        for child in self.children:
-            size += child.countmembers()
-        size += len(self.nodes)
-        return size
+        return self._countmembers()
 
 
 
