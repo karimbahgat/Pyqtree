@@ -156,17 +156,17 @@ class _QuadTree:
             if rect[0] <= self.center[0]:
                 if rect[1] <= self.center[1]:
                     self.children[0]._intersect(rect, results)
-                if rect[3] > self.center[1]:
+                if rect[3] >= self.center[1]:
                     self.children[1]._intersect(rect, results)
-            if rect[2] > self.center[0]:
+            if rect[2] >= self.center[0]:
                 if rect[1] <= self.center[1]:
                     self.children[2]._intersect(rect, results)
-                if rect[3] > self.center[1]:
+                if rect[3] >= self.center[1]:
                     self.children[3]._intersect(rect, results)
         # search node at this level
         for node in self.nodes:
-            if (node.rect[2] > rect[0] and node.rect[0] <= rect[2] and 
-                node.rect[3] > rect[1] and node.rect[1] <= rect[3]):
+            if (node.rect[2] >= rect[0] and node.rect[0] <= rect[2] and 
+                node.rect[3] >= rect[1] and node.rect[1] <= rect[3]):
                 results.add(node.item)
         return results
     
@@ -174,8 +174,8 @@ class _QuadTree:
     
     def _insert_into_children(self, item, rect):
         # if rect spans center then insert here
-        if ((rect[0] <= self.center[0] and rect[2] > self.center[0]) and
-            (rect[1] <= self.center[1] and rect[3] > self.center[1])):
+        if ((rect[0] <= self.center[0] and rect[2] >= self.center[0]) and
+            (rect[1] <= self.center[1] and rect[3] >= self.center[1])):
             node = _QuadNode(item, rect)
             self.nodes.append(node)
         else:
@@ -183,12 +183,12 @@ class _QuadTree:
             if rect[0] <= self.center[0]:
                 if rect[1] <= self.center[1]:
                     self.children[0]._insert(item, rect)
-                if rect[3] > self.center[1]:
+                if rect[3] >= self.center[1]:
                     self.children[1]._insert(item, rect)
             if rect[2] > self.center[0]:
                 if rect[1] <= self.center[1]:
                     self.children[2]._insert(item, rect)
-                if rect[3] > self.center[1]:
+                if rect[3] >= self.center[1]:
                     self.children[3]._insert(item, rect)
                     
     def _split(self):
