@@ -122,7 +122,7 @@ class _QuadTree(object):
         self.width, self.height = width, height
         self.max_items = max_items
         self.max_depth = max_depth
-        self.depth = _depth
+        self._depth = _depth
         
     def __iter__(self):
         for child in _loopallchildren(self):
@@ -134,7 +134,7 @@ class _QuadTree(object):
             node = _QuadNode(item, rect)
             self.nodes.append(node)
             
-            if len(self.nodes) > self.max_items and self.depth < self.max_depth:
+            if len(self.nodes) > self.max_items and self._depth < self.max_depth:
                 self._split()
         else:
             self._insert_into_children(item, rect)
@@ -190,7 +190,7 @@ class _QuadTree(object):
         x2 = self.center[0] + quartwidth
         y1 = self.center[1] - quartheight
         y2 = self.center[1] + quartheight
-        new_depth = self.depth + 1
+        new_depth = self._depth + 1
         self.children = [_QuadTree(x1, y1, halfwidth, halfheight,
                                    self.max_items, self.max_depth, new_depth),
                          _QuadTree(x1, y2, halfwidth, halfheight,
@@ -213,7 +213,7 @@ class _QuadTree(object):
         """
         size = 0
         for child in self.children:
-            size += child.__len__()
+            size += len(child)
         size += len(self.nodes)
         return size
 
