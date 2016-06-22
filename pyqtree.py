@@ -33,12 +33,12 @@ it anywhere Python can import it, such as the Python site-packages folder.
 
 Start your script by importing the quad tree.
 
-    from pyqtree import QuadTree
+    from pyqtree import Index
 
 Setup the spatial index, giving it a bounding box area to keep track of.
 The bounding box being in a four-tuple: (xmin, ymin, xmax, ymax).
 
-    spindex = QuadTree.from_bbox((0, 0, 100, 100))
+    spindex = Index(bbox=(0, 0, 100, 100))
 
 Populate the index with items that you want to be retrieved at a later point,
 along with each item's geographic bbox.
@@ -70,11 +70,12 @@ This code is free to share, use, reuse, and modify according to the MIT license,
 
 ## Credits:
 
-Karim Bahgat (2015)
-Joschua Gandert (2016)
+- Karim Bahgat (2015)
+- Joschua Gandert (2016)
+
 """
 
-__version__ = "0.24"
+__version__ = "0.25.0"
 
 #PYTHON VERSION CHECK
 import sys
@@ -222,7 +223,7 @@ MAX_ITEMS = 10
 MAX_DEPTH = 20
 
 
-class QuadTree(_QuadTree):
+class Index(_QuadTree):
     """
     The top spatial index to be created by the user. Once created it can be
     populated with geographically placed members that can later be tested for
@@ -232,7 +233,7 @@ class QuadTree(_QuadTree):
     
     Example usage:
     
-    >>> spindex = QuadTree.from_bbox((0, 0, 100, 100))
+    >>> spindex = Index(bbox=(0, 0, 100, 100))
     >>> spindex.insert('duck', (50, 30, 53, 60))
     >>> spindex.insert('cookie', (10, 20, 15, 25))
     >>> spindex.insert('python', (40, 50, 95, 90))
@@ -241,9 +242,13 @@ class QuadTree(_QuadTree):
     ['duck', 'python']
     """
     
-    def __init__(self, x, y, width, height, max_items=MAX_ITEMS, max_depth=MAX_DEPTH):
+    def __init__(self, bbox=None, x=None, y=None, width=None, height=None, max_items=MAX_ITEMS, max_depth=MAX_DEPTH):
         """
+        Initiate by specifying either 1) a bbox to keep track of, or 2) with an xy centerpoint and a width and height.
+        
         Parameters:
+        - **bbox**: The coordinate system bounding box of the area that the quadtree should
+            keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)
         - **x**:
             The x center coordinate of the area that the quadtree should keep track of. 
         - **y**
@@ -257,23 +262,17 @@ class QuadTree(_QuadTree):
         - **max_depth** (optional): The maximum levels of nested subquads, after which no more splitting
             occurs and the bottommost quad nodes may grow indefinately. Default is 20. 
         """
-        super(QuadTree, self).__init__(x, y, width, height, max_items, max_depth)
-        
-    @classmethod
-    def from_bbox(cls, bbox, max_items=MAX_ITEMS, max_depth=MAX_DEPTH):
-        """
-        Parameters:
-        - **bbox**: The coordinate system bounding box of the area that the quadtree should
-            keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)
-        - **max_items** (optional): The maximum number of items allowed per quad before splitting
-            up into four new subquads. Default is 10. 
-        - **max_depth** (optional): The maximum levels of nested subquads, after which no more splitting
-            occurs and the bottommost quad nodes may grow indefinately. Default is 20. 
-        """
-        x1, y1, x2, y2 = bbox
-        width, height = x2-x1, y2-y1
-        midx, midy = x1+width/2.0, y1+height/2.0
-        return cls(midx, midy, width, height, max_items, max_depth)
+        if bbox:
+            x1, y1, x2, y2 = bbox
+            width, height = abs(x2-x1), abs(y2-y1)
+            midx, midy = x1+width/2.0, y1+height/2.0
+            super(Index, self).__init__(midx, midy, width, height, max_items, max_depth)
+
+        elif all(x, y, width, height):
+            super(Index, self).__init__(x, y, width, height, max_items, max_depth)
+
+        else:
+            raise Exception("Either the bbox argument must be set, or the x, y, width, and height arguments must be set")
 
     def insert(self, item, bbox):
         """

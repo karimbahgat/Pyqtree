@@ -1,0 +1,10 @@
+
+## Changes
+
+### 0.25.0 (2016-06-22)
+
+- Misc user contributions and bug fixes
+
+### 0.24.0 (2015-06-18)
+
+- Previous stable PyPI version.

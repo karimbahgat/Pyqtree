@@ -35,18 +35,18 @@ folder.
 Example Usage
 -------------
 
-Start your script by importing the module.
+Start your script by importing the quad tree.
 
 ::
 
-    import pyqtree
+    from pyqtree import Index
 
 Setup the spatial index, giving it a bounding box area to keep track of.
-The bounding box being in a four-tuple: (xmin,ymin,xmax,ymax).
+The bounding box being in a four-tuple: (xmin, ymin, xmax, ymax).
 
 ::
 
-    spindex = pyqtree.Index(bbox=[0,0,100,100])
+    spindex = Index(bbox=(0, 0, 100, 100))
 
 Populate the index with items that you want to be retrieved at a later
 point, along with each item's geographic bbox.
@@ -55,7 +55,7 @@ point, along with each item's geographic bbox.
 
     # this example assumes you have a list of items with bbox attribute
     for item in items:
-        spindex.insert(item=item, bbox=item.bbox)
+        spindex.insert(item, item.bbox)
 
 Then when you have a region of interest and you wish to retrieve items
 from that region, just use the index's intersect method. This quickly
@@ -64,7 +64,7 @@ of interests.
 
 ::
 
-    overlapbbox = (51,51,86,86)
+    overlapbbox = (51, 51, 86, 86)
     matches = spindex.intersect(overlapbbox)
 
 There are other things that can be done as well, but that's it for the
@@ -85,4 +85,18 @@ license, see LICENSE.txt.
 Credits:
 --------
 
-Karim Bahgat (2015)
+-  Karim Bahgat (2015)
+-  Joschua Gandert (2016)
+
+Changes
+-------
+
+0.25.0 (2016-06-22)
+~~~~~~~~~~~~~~~~~~~
+
+-  Misc user contributions and bug fixes
+
+0.24.0 (2015-06-18)
+~~~~~~~~~~~~~~~~~~~
+
+-  Previous stable PyPI version.

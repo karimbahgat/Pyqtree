@@ -1044,7 +1044,6 @@ table {
           
   <ul>
     <li class="mono"><a href="#pyqtree.Index.__init__">__init__</a></li>
-    <li class="mono"><a href="#pyqtree.Index.countmembers">countmembers</a></li>
     <li class="mono"><a href="#pyqtree.Index.insert">insert</a></li>
     <li class="mono"><a href="#pyqtree.Index.intersect">intersect</a></li>
   </ul>
@@ -1083,7 +1082,21 @@ table {
 populated with geographically placed members that can later be tested for
 intersection with a user inputted geographic bounding box. Note that the
 index can be iterated through in a for-statement, which loops through all
-all the quad instances and lets you access their properties.</p></div>
+all the quad instances and lets you access their properties.</p>
+<p>Example usage:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>spindex = Index(bbox=(0, 0, 100, 100))
+spindex.insert('duck', (50, 30, 53, 60))
+spindex.insert('cookie', (10, 20, 15, 25))
+spindex.insert('python', (40, 50, 95, 90))
+results = spindex.intersect((51, 51, 86, 86))
+sorted(results)
+['duck', 'python']</p>
+</blockquote>
+</blockquote>
+</blockquote></div>
   <div class="source_cont">
 </div>
 
@@ -1093,45 +1106,34 @@ all the quad instances and lets you access their properties.</p></div>
           <ul class="class_list">
           <li><a href="#pyqtree.Index">Index</a></li>
           <li>pyqtree._QuadTree</li>
+          <li>__builtin__.object</li>
           </ul>
           <h3>Methods</h3>
             
   <div class="item">
     <div class="name def" id="pyqtree.Index.__init__">
-    <p>def <span class="ident">__init__</span>(</p><p>self, bbox, maxitems=10, maxdepth=20)</p>
+    <p>def <span class="ident">__init__</span>(</p><p>self, bbox=None, x=None, y=None, width=None, height=None, max_items=10, max_depth=20)</p>
     </div>
     
 
     
   
-    <div class="desc"><p>Parameters:</p>
-<ul>
-<li><strong>bbox</strong>: The coordinate system bounding box of the area that the quadtree should
-    keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)</li>
-<li><strong>maxmembers</strong> (optional): The maximum number of items allowed per quad before splitting
-    up into four new subquads. Default is 10. </li>
-<li><strong>maxdepth</strong> (optional): The maximum levels of nested subquads, after which no more splitting
-    occurs and the bottommost quad nodes may grow indefinately. Default is 20.</li>
-</ul></div>
-  <div class="source_cont">
-</div>
-
-  </div>
-  
-            
-  <div class="item">
-    <div class="name def" id="pyqtree.Index.countmembers">
-    <p>def <span class="ident">countmembers</span>(</p><p>self)</p>
-    </div>
-    
-
-    
-  
-    <div class="desc"><p>Returns:</p>
-<ul>
-<li>A count of the total number of members/items/nodes inserted into
-    this quadtree and all of its child trees.</li>
-</ul></div>
+    <div class="desc"><p>Initiate by specifying either 1) a bbox to keep track of, or 2) with an xy centerpoint and a width and height.</p>
+<p>Parameters:
+- <strong>bbox</strong>: The coordinate system bounding box of the area that the quadtree should
+    keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)
+- <strong>x</strong>:
+    The x center coordinate of the area that the quadtree should keep track of. 
+- <strong>y</strong>
+    The y center coordinate of the area that the quadtree should keep track of.
+- <strong>width</strong>:
+    How far from the xcenter that the quadtree should look when keeping track. 
+- <strong>height</strong>:
+    How far from the ycenter that the quadtree should look when keeping track
+- <strong>max_items</strong> (optional): The maximum number of items allowed per quad before splitting
+    up into four new subquads. Default is 10. 
+- <strong>max_depth</strong> (optional): The maximum levels of nested subquads, after which no more splitting
+    occurs and the bottommost quad nodes may grow indefinately. Default is 20.</p></div>
   <div class="source_cont">
 </div>
 
@@ -1147,11 +1149,9 @@ all the quad instances and lets you access their properties.</p></div>
     
   
     <div class="desc"><p>Inserts an item into the quadtree along with its bounding box.</p>
-<p>Parameters:</p>
-<ul>
-<li><strong>item</strong>: The item to insert into the index, which will be returned by the intersection method</li>
-<li><strong>bbox</strong>: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)</li>
-</ul></div>
+<p>Parameters:
+- <strong>item</strong>: The item to insert into the index, which will be returned by the intersection method
+- <strong>bbox</strong>: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)</p></div>
   <div class="source_cont">
 </div>
 
@@ -1167,15 +1167,11 @@ all the quad instances and lets you access their properties.</p></div>
     
   
     <div class="desc"><p>Intersects an input boundingbox rectangle with all of the items
-contained in the quadtree. </p>
-<p>Parameters:</p>
-<ul>
-<li><strong>bbox</strong>: A spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)</li>
-</ul>
-<p>Returns:</p>
-<ul>
-<li>A list of inserted items whose bounding boxes intersect with the input rectangle.</li>
-</ul></div>
+contained in the quadtree.</p>
+<p>Parameters:
+- <strong>bbox</strong>: A spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)</p>
+<p>Returns:
+- A list of inserted items whose bounding boxes intersect with the input bbox.</p></div>
   <div class="source_cont">
 </div>
 
