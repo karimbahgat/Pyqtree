@@ -262,13 +262,13 @@ class Index(_QuadTree):
         - **max_depth** (optional): The maximum levels of nested subquads, after which no more splitting
             occurs and the bottommost quad nodes may grow indefinately. Default is 20. 
         """
-        if bbox:
+        if bbox is not None:
             x1, y1, x2, y2 = bbox
             width, height = abs(x2-x1), abs(y2-y1)
             midx, midy = x1+width/2.0, y1+height/2.0
             super(Index, self).__init__(midx, midy, width, height, max_items, max_depth)
 
-        elif all(x, y, width, height):
+        elif None not in (x, y, width, height):
             super(Index, self).__init__(x, y, width, height, max_items, max_depth)
 
         else:
