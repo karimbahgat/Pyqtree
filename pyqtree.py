@@ -3,7 +3,7 @@
 
 Pyqtree is a pure Python spatial index for GIS or rendering usage.
 It stores and quickly retrieves items from a 2x2 rectangular grid area,
-and grows in depth and detail as more items are added. 
+and grows in depth and detail as more items are added.
 The actual quad tree implementation is adapted from
 [Matt Rasmussen's compbio library](https://github.com/mdrasmus/compbio/blob/master/rasmus/quadtree.py)
 and extended for geospatial use.
@@ -11,7 +11,7 @@ and extended for geospatial use.
 
 ## Platforms
 
-Python 2 and 3. 
+Python 2 and 3.
 
 
 ## Dependencies
@@ -49,7 +49,7 @@ along with each item's geographic bbox.
 
 Then when you have a region of interest and you wish to retrieve items from that region,
 just use the index's intersect method. This quickly gives you a list of the stored items
-whose bboxes intersects your region of interests. 
+whose bboxes intersects your region of interests.
 
     overlapbbox = (51, 51, 86, 86)
     matches = spindex.intersect(overlapbbox)
@@ -101,11 +101,16 @@ def _loopallchildren(parent):
         yield child
 
 
-class _QuadNode(object):    
+class _QuadNode(object):
     def __init__(self, item, rect):
         self.item = item
         self.rect = rect
 
+    def __eq__(self, other):
+        return self.item == other.item and self.rect == other.rect
+
+    def __hash__(self):
+        return hash(self.item)
 
 
 class _QuadTree(object):
@@ -115,7 +120,7 @@ class _QuadTree(object):
     index, but requires more technical arguments when initiating it than the
     user-friendly version.
     """
-    
+
     def __init__(self, x, y, width, height, max_items, max_depth, _depth=0):
         self.nodes = []
         self.children = []
@@ -124,22 +129,30 @@ class _QuadTree(object):
         self.max_items = max_items
         self.max_depth = max_depth
         self._depth = _depth
-        
+
     def __iter__(self):
         for child in _loopallchildren(self):
             yield child
-            
+
     def _insert(self, item, bbox):
         rect = _normalize_rect(bbox)
         if len(self.children) == 0:
             node = _QuadNode(item, rect)
             self.nodes.append(node)
-            
+
             if len(self.nodes) > self.max_items and self._depth < self.max_depth:
                 self._split()
         else:
             self._insert_into_children(item, rect)
-            
+
+    def _remove(self, item, bbox):
+        rect = _normalize_rect(bbox)
+        if len(self.children) == 0:
+            node = _QuadNode(item, rect)
+            self.nodes.remove(node)
+        else:
+            self._remove_from_children(item, rect)
+
     def _intersect(self, rect, results=None):
         if results is None:
             rect = _normalize_rect(rect)
@@ -158,11 +171,11 @@ class _QuadTree(object):
                     self.children[3]._intersect(rect, results)
         # search node at this level
         for node in self.nodes:
-            if (node.rect[2] >= rect[0] and node.rect[0] <= rect[2] and 
+            if (node.rect[2] >= rect[0] and node.rect[0] <= rect[2] and
                 node.rect[3] >= rect[1] and node.rect[1] <= rect[3]):
                 results.add(node.item)
         return results
-    
+
     def _insert_into_children(self, item, rect):
         # if rect spans center then insert here
         if (rect[0] <= self.center[0] and rect[2] >= self.center[0] and
@@ -181,7 +194,26 @@ class _QuadTree(object):
                     self.children[2]._insert(item, rect)
                 if rect[3] >= self.center[1]:
                     self.children[3]._insert(item, rect)
-                    
+
+    def _remove_from_children(self, item, rect):
+        # if rect spans center then insert here
+        if (rect[0] <= self.center[0] and rect[2] >= self.center[0] and
+            rect[1] <= self.center[1] and rect[3] >= self.center[1]):
+            node = _QuadNode(item, rect)
+            self.nodes.remove(node)
+        else:
+            # try to remove from children
+            if rect[0] <= self.center[0]:
+                if rect[1] <= self.center[1]:
+                    self.children[0]._remove(item, rect)
+                if rect[3] >= self.center[1]:
+                    self.children[1]._remove(item, rect)
+            if rect[2] > self.center[0]:
+                if rect[1] <= self.center[1]:
+                    self.children[2]._remove(item, rect)
+                if rect[3] >= self.center[1]:
+                    self.children[3]._remove(item, rect)
+
     def _split(self):
         quartwidth = self.width / 4.0
         quartheight = self.height / 4.0
@@ -208,7 +240,7 @@ class _QuadTree(object):
     def __len__(self):
         """
         Returns:
-        
+
         - A count of the total number of members/items/nodes inserted
         into this quadtree and all of its child trees.
         """
@@ -230,9 +262,9 @@ class Index(_QuadTree):
     intersection with a user inputted geographic bounding box. Note that the
     index can be iterated through in a for-statement, which loops through all
     all the quad instances and lets you access their properties.
-    
+
     Example usage:
-    
+
     >>> spindex = Index(bbox=(0, 0, 100, 100))
     >>> spindex.insert('duck', (50, 30, 53, 60))
     >>> spindex.insert('cookie', (10, 20, 15, 25))
@@ -241,26 +273,26 @@ class Index(_QuadTree):
     >>> sorted(results)
     ['duck', 'python']
     """
-    
+
     def __init__(self, bbox=None, x=None, y=None, width=None, height=None, max_items=MAX_ITEMS, max_depth=MAX_DEPTH):
         """
         Initiate by specifying either 1) a bbox to keep track of, or 2) with an xy centerpoint and a width and height.
-        
+
         Parameters:
         - **bbox**: The coordinate system bounding box of the area that the quadtree should
             keep track of, as a 4-length sequence (xmin,ymin,xmax,ymax)
         - **x**:
-            The x center coordinate of the area that the quadtree should keep track of. 
+            The x center coordinate of the area that the quadtree should keep track of.
         - **y**
             The y center coordinate of the area that the quadtree should keep track of.
         - **width**:
-            How far from the xcenter that the quadtree should look when keeping track. 
+            How far from the xcenter that the quadtree should look when keeping track.
         - **height**:
             How far from the ycenter that the quadtree should look when keeping track
         - **max_items** (optional): The maximum number of items allowed per quad before splitting
-            up into four new subquads. Default is 10. 
+            up into four new subquads. Default is 10.
         - **max_depth** (optional): The maximum levels of nested subquads, after which no more splitting
-            occurs and the bottommost quad nodes may grow indefinately. Default is 20. 
+            occurs and the bottommost quad nodes may grow indefinately. Default is 20.
         """
         if bbox is not None:
             x1, y1, x2, y2 = bbox
@@ -277,21 +309,30 @@ class Index(_QuadTree):
     def insert(self, item, bbox):
         """
         Inserts an item into the quadtree along with its bounding box.
-        
+
         Parameters:
         - **item**: The item to insert into the index, which will be returned by the intersection method
         - **bbox**: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)
         """
         self._insert(item, bbox)
 
+    def remove(self, item, bbox=None):
+        """
+        Removes an item from the quadtree.
+
+        Parameters:
+        - **item**: The item to insert into the index, which will be returned by the intersection method
+        """
+        self._remove(item, bbox)
+
     def intersect(self, bbox):
         """
         Intersects an input boundingbox rectangle with all of the items
         contained in the quadtree.
-        
+
         Parameters:
         - **bbox**: A spatial bounding box tuple with four members (xmin,ymin,xmax,ymax)
-        
+
         Returns:
         - A list of inserted items whose bounding boxes intersect with the input bbox.
         """
