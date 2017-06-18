@@ -316,12 +316,15 @@ class Index(_QuadTree):
         """
         self._insert(item, bbox)
 
-    def remove(self, item, bbox=None):
+    def remove(self, item, bbox):
         """
         Removes an item from the quadtree.
 
         Parameters:
-        - **item**: The item to insert into the index, which will be returned by the intersection method
+        - **item**: The item to remove from the index
+        - **bbox**: The spatial bounding box tuple of the item, with four members (xmin,ymin,xmax,ymax)
+
+        Both parameters need to exactly match the parameters provided to the insert method.
         """
         self._remove(item, bbox)
 
