@@ -85,7 +85,11 @@ if PYTHON3:
 
 
 def _normalize_rect(rect):
-    x1, y1, x2, y2 = rect
+    if len(rect) == 2:
+        x1, y1 = rect
+        x2, y2 = rect
+    else:
+        x1, y1, x2, y2 = rect
     if x1 > x2:
         x1, x2 = x2, x1
     if y1 > y2:
