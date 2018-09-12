@@ -160,7 +160,7 @@ class _QuadTree(object):
     def _intersect(self, rect, results=None):
         if results is None:
             rect = _normalize_rect(rect)
-            results = set()
+            results = []
         # search children
         if self.children:
             if rect[0] <= self.center[0]:
@@ -177,7 +177,7 @@ class _QuadTree(object):
         for node in self.nodes:
             if (node.rect[2] >= rect[0] and node.rect[0] <= rect[2] and
                 node.rect[3] >= rect[1] and node.rect[1] <= rect[3]):
-                results.add(node.item)
+                results.append(node.item)
         return results
 
     def _insert_into_children(self, item, rect):
