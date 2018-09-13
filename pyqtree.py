@@ -70,12 +70,12 @@ This code is free to share, use, reuse, and modify according to the MIT license,
 
 ## Credits:
 
-- Karim Bahgat (2015)
-- Joschua Gandert (2016)
+- Karim Bahgat
+- Joschua Gandert
 
 """
 
-__version__ = "0.25.0"
+__version__ = "1.0.0"
 
 #PYTHON VERSION CHECK
 import sys
@@ -157,27 +157,31 @@ class _QuadTree(object):
         else:
             self._remove_from_children(item, rect)
 
-    def _intersect(self, rect, results=None):
+    def _intersect(self, rect, results=None, uniq=None):
         if results is None:
             rect = _normalize_rect(rect)
             results = []
+            uniq = set()
         # search children
         if self.children:
             if rect[0] <= self.center[0]:
                 if rect[1] <= self.center[1]:
-                    self.children[0]._intersect(rect, results)
+                    self.children[0]._intersect(rect, results, uniq)
                 if rect[3] >= self.center[1]:
-                    self.children[1]._intersect(rect, results)
+                    self.children[1]._intersect(rect, results, uniq)
             if rect[2] >= self.center[0]:
                 if rect[1] <= self.center[1]:
-                    self.children[2]._intersect(rect, results)
+                    self.children[2]._intersect(rect, results, uniq)
                 if rect[3] >= self.center[1]:
-                    self.children[3]._intersect(rect, results)
+                    self.children[3]._intersect(rect, results, uniq)
         # search node at this level
         for node in self.nodes:
-            if (node.rect[2] >= rect[0] and node.rect[0] <= rect[2] and
+            _id = id(node.item)
+            if (_id not in uniq and
+                node.rect[2] >= rect[0] and node.rect[0] <= rect[2] and
                 node.rect[3] >= rect[1] and node.rect[1] <= rect[3]):
                 results.append(node.item)
+                uniq.add(_id)
         return results
 
     def _insert_into_children(self, item, rect):
@@ -343,9 +347,4 @@ class Index(_QuadTree):
         Returns:
         - A list of inserted items whose bounding boxes intersect with the input bbox.
         """
-        uniq = []
-        for item in self._intersect(bbox):
-            if item not in uniq:
-                uniq.append(item)
-            
-        return uniq
+        return self._intersect(bbox)

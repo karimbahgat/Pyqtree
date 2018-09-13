@@ -22,6 +22,8 @@ print("testing hit")
 testitem = (51,51,86,86)
 t = time.time()
 matches = spindex.intersect(testitem)
+print(len(matches))
+print(len(set(matches)))
 print("{0} seconds".format(time.time()-t))
 
 #test countmembers()

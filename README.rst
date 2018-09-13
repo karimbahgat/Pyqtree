@@ -85,11 +85,18 @@ license, see LICENSE.txt.
 Credits:
 --------
 
--  Karim Bahgat (2015)
--  Joschua Gandert (2016)
+-  Karim Bahgat
+-  Joschua Gandert
 
 Changes
 -------
+
+1.0.0 (2018-09-12)
+~~~~~~~~~~~~~~~~~~
+
+-  Bump to first major version
+-  Fix so returns list instead of set
+-  Support inserting hashable items
 
 0.25.0 (2016-06-22)
 ~~~~~~~~~~~~~~~~~~~

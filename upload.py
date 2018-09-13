@@ -16,7 +16,10 @@ pipy.define_upload(packpath,
                                 "Intended Audience :: Science/Research",
                                 'Intended Audience :: End Users/Desktop',
                                 "Topic :: Scientific/Engineering :: GIS"],
-                   changes=["Misc user contributions and bug fixes"],
+                   changes=["Bump to first major version",
+                            "Fix so returns list instead of set",
+                            "Support inserting hashable items",
+                            ],
                    )
 
 pipy.generate_docs(packpath)
