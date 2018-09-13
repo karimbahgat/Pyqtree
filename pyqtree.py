@@ -343,4 +343,4 @@ class Index(_QuadTree):
         Returns:
         - A list of inserted items whose bounding boxes intersect with the input bbox.
         """
-        return self._intersect(bbox)
+        return list(set(self._intersect(bbox)))
