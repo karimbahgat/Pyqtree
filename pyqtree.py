@@ -343,4 +343,9 @@ class Index(_QuadTree):
         Returns:
         - A list of inserted items whose bounding boxes intersect with the input bbox.
         """
-        return list(set(self._intersect(bbox)))
+        uniq = []
+        for item in self._intersect(bbox):
+            if item not in uniq:
+                uniq.append(item)
+            
+        return uniq

@@ -5,7 +5,7 @@ INDEX_BBOX = (0, 0, 10, 10)
 ITEM1 = 'Item 1'
 BBOX1 = (0, 0, 0, 0)
 
-ITEM2 = 'Item 2'
+ITEM2 = {'name': 'Item 2'} # non-hashable
 BBOX2 = (1, 1, 1, 1)
 
 
