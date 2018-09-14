@@ -74,7 +74,7 @@ More Information:
 -----------------
 
 -  `Home Page <http://github.com/karimbahgat/Pyqtree>`__
--  `API Documentation <http://karimbahgat.github.io/Pyqtree/>`__
+-  `API Documentation <https://karimbahgat.github.io/Pyqtree/>`__
 
 License:
 --------
