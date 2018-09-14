@@ -74,7 +74,7 @@ More Information:
 -----------------
 
 -  `Home Page <http://github.com/karimbahgat/Pyqtree>`__
--  `API Documentation <http://pythonhosted.org/Pyqtree>`__
+-  `API Documentation <http://karimbahgat.github.io/Pyqtree/>`__
 
 License:
 --------
@@ -91,7 +91,7 @@ Credits:
 Changes
 -------
 
-1.0.0 (2018-09-12)
+1.0.0 (2018-09-14)
 ~~~~~~~~~~~~~~~~~~
 
 -  Bump to first major version

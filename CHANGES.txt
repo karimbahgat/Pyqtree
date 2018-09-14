@@ -1,7 +1,7 @@
 
 ## Changes
 
-### 1.0.0 (2018-09-12)
+### 1.0.0 (2018-09-14)
 
 - Bump to first major version
 - Fix so returns list instead of set

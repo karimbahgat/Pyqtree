@@ -60,7 +60,7 @@ There are other things that can be done as well, but that's it for the main usag
 ## More Information:
 
 - [Home Page](http://github.com/karimbahgat/Pyqtree)
-- [API Documentation](http://pythonhosted.org/Pyqtree)
+- [API Documentation](http://karimbahgat.github.io/Pyqtree/)
 
 
 ## License:
